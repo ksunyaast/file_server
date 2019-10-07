@@ -13,12 +13,16 @@ def file_list(request, date=None):
         statinfo = os.stat(path=f'{settings.FILES_PATH}/{file}')
         c_time = datetime.datetime.fromtimestamp(statinfo.st_ctime)
         m_time = datetime.datetime.fromtimestamp(statinfo.st_mtime)
-        context_files.append({'name': file, 'ctime': c_time, 'mtime': m_time})
+        if date:
+            if c_time.date() == date or m_time.date() == date:
+                context_files.append({'name': file, 'ctime': c_time, 'mtime': m_time})
+        else:
+            context_files.append({'name': file, 'ctime': c_time, 'mtime': m_time})
 
     # Реализуйте алгоритм подготавливающий контекстные данные для шаблона по примеру:
     context = {
         'files': context_files,
-        'date': date  # Этот параметр необязательный
+        'date': date # Этот параметр необязательный
     }
 
     return render(request, template_name, context)
